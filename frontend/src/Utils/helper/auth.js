@@ -8,7 +8,7 @@ export const getLoginStatusFromCookies = () => {
     }
     return false;
 };
-
+// get user from cookies
 export const getUserDataFromCookies = () => {
     const cookies = document.cookie.split(';');
     const userData = {};

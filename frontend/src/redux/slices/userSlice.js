@@ -4,12 +4,12 @@ import { getUserDataFromCookies } from "../../Utils/helper/auth";
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
-        user: null,
+        user: getUserDataFromCookies(),
     },
     reducers: {
-        setUser: (state, action) => {
-            state.user = action.payload;
-        },
+        // setUser: (state, action) => {
+        //     state.user = action.payload;
+        // },
         fetchUserFromCookies: (state) => {
             const userData = getUserDataFromCookies();
             state.user = userData;
