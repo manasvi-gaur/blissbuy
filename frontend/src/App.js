@@ -16,6 +16,9 @@ import ProductDetails from './components/ProductDetails/ProductDetails';
 import Cart from './components/Cart/Cart';
 import Checkout from './components/Checkout/Checkout';
 import CustomerRoutes from './Routes/CustomerRoutes';
+import { useEffect } from 'react';
+import { getLoginStatusFromCookies } from './Utils/helper/auth';
+import { login, logout } from './redux/slices/authSlice';
 
 function App() {
   return (

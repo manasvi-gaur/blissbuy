@@ -22,7 +22,7 @@ const CartItemSchema= new mongoose.Schema({
         default:1
     }
     ,size:{
-        type:Number,
+        type:String,
         required:true,
         
     },

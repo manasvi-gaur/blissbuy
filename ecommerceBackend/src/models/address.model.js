@@ -22,7 +22,7 @@ const AddressSchema= new mongoose.Schema({
         required:true,
         
     },
-    zipcod:{
+    zipcode:{
         type:Number,
         require:true
         

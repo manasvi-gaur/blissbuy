@@ -2,7 +2,8 @@ import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { state } from '../../Sampleprods/state'
 const products = [
   {
     id: 1,
@@ -30,7 +31,7 @@ const products = [
 
 export default function Cart({open,setOpen}) {
 //   const [open, setOpen] = useState(true)
-
+const cartItems = useSelector((state)=>state.cart);
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -79,7 +80,7 @@ export default function Cart({open,setOpen}) {
                       <div className="mt-8">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {products.map((product) => (
+                            {cartItems?.map((product) => (
                               <li key={product.id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img

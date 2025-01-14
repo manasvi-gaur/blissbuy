@@ -1,4 +1,4 @@
-
+import React, { useEffect } from "react";
 import logo from "../components/logo.png";
 import { Fragment, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
@@ -12,7 +12,10 @@ import Cart from "./Cart/Cart";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import OrderList from "./OrderList/OrderList";
 import { Link, useNavigate } from "react-router-dom";
-import { Alert } from "bootstrap";
+import Button from "@mui/material/Button";
+import AuthModal from "../Auth/AuthModal";
+import { useSelector } from "react-redux";
+import { useGetUserQuery } from "../redux/api/user.api";
 
 const navigation = {
   categories: [
@@ -150,10 +153,29 @@ function classNames(...classes) {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const [openCart, setOpenCart] = useState(false);
   const [openOrderList, setOpenOrderList] = useState(false);
+  const [openAuthModal, setOpenAuthModal] = React.useState(false);
+  const isLogged = useSelector((state) => state.auth).isLogged;
+  const {data, isSuccess:isUserDataSuccess, refetch} = useGetUserQuery({skip: !isLogged});
 
- 
+  const handleClose = () => {
+    setOpenAuthModal(false);
+    navigate("/");
+  };
+  const handleOpen = () => {
+    setOpenAuthModal(true);
+  };
+
+  useEffect(()=>{
+    if(isLogged){
+      refetch();
+    }
+    if(isUserDataSuccess){
+      console.log(data);
+    }
+  }, [isLogged, refetch])
 
   return (
     <div className="bg-white">
@@ -296,22 +318,26 @@ export default function Header() {
                 </div>
 
                 <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                  <div className="flow-root">
-                    <a
-                      href="#"
-                      className="-m-2 block p-2 font-medium text-gray-900"
-                    >
-                      Sign in
-                    </a>
-                  </div>
-                  <div className="flow-root">
+                  {isLogged ? (
+                    <div className="flex flex-col space-y-6">{data?.firstName}</div>
+                  ) : (
+                    <div className="flow-root">
+                      <Button
+                        onClick={handleOpen}
+                        className="-m-2 block p-2 font-medium text-gray-900"
+                      >
+                        Sign in
+                      </Button>
+                    </div>
+                  )}
+                  {/* <div className="flow-root">
                     <a
                       href="#"
                       className="-m-2 block p-2 font-medium text-gray-900"
                     >
                       Create account
                     </a>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <div className="border-t border-gray-200 px-4 py-6">
@@ -336,9 +362,7 @@ export default function Header() {
         
         </p> */}
 
-
-         {/* free shipping plag */}
-
+        {/* free shipping plag */}
 
         {/* <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
           <div
@@ -430,7 +454,7 @@ export default function Header() {
               <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch z-10">
                 <div className="flex h-full space-x-8">
                   {navigation.categories.map((category) => (
-                    <Popover  key={category.name} className="flex">
+                    <Popover key={category.name} className="flex">
                       {({ open }) => (
                         <>
                           <div className="relative flex">
@@ -512,25 +536,22 @@ export default function Header() {
                                             className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                           >
                                             {section.items.map((item) => (
-                                              
                                               <li
                                                 key={item.name}
                                                 className="flex"
                                               >
                                                 <Link
-                                                   to={`/${category.name}/${section.name}/${item.name}`}
-                                                   
+                                                  to={`/${category.name}/${section.name}/${item.name}`}
                                                   // onClick={handleClick(category.name,item.name)}
                                                   // onClick={()=>{
                                                   //   window.open(`/${category.name}/${item.name}/products`)
-                                                    
+
                                                   // }}
                                                   className="hover:text-gray-800"
                                                 >
                                                   {item.name}
                                                 </Link>
                                               </li>
-
                                             ))}
                                           </ul>
                                         </div>
@@ -559,21 +580,25 @@ export default function Header() {
               </Popover.Group>
 
               <div className="ml-auto flex items-center">
-                <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                  >
-                    Sign in
-                  </a>
-                  <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                  <a
+                {isLogged ? (
+                  <div className="flex items-center space-x-4">{data?.firstName}</div>
+                ) : (
+                  <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
+                    <Button
+                      onClick={handleOpen}
+                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                    >
+                      Sign in
+                    </Button>
+                    <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
+                    {/* <a
                     href="#"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
                     Create account
-                  </a>
-                </div>
+                  </a> */}
+                  </div>
+                )}
 
                 {/* change currency */}
                 {/* <div className="hidden lg:ml-8 lg:flex">
@@ -638,16 +663,7 @@ export default function Header() {
         open={openOrderList}
         setOpenOrderList={setOpenOrderList}
       ></OrderList>
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
     </div>
   );
 }
-
-// function WelcomeAlert() {
-//   return (
-//     <>
-//     <div style={{backgroundColor:"purple",color:"white",padding:"10px"}}> Free Shipping on orders above $40 | Free Returns | International Shipping</div><br></br>
-//     </>
-//   );
-// }
-
-// export  {WelcomeAlert};

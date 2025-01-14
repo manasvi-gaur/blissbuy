@@ -19,10 +19,10 @@ const OrderSchema= new mongoose.Schema({
             ref:"users"
     }
     ,
-    orderItems:{
+    orderItems:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"orderItems"
-    } ,
+    }] ,
     shippingAddress:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"addresses"
