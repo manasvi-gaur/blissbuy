@@ -29,7 +29,7 @@ const login = async(req,res)=>{
             return res.status(401).send({message:"Invalid Password..."})
         }
         const jwt = jwtProvider.generateToken(user._id);
-        res.cookie("jwt",jwt,{httpOnly:true});
+        res.cookie("jwt",jwt,{httpOnly:true, expires: new Date(Date.now() + 48*60*60*1000)});
         res.cookie("isLogged",true);
         return res.status(290).send({jwt,message:"login success"});
     } catch (error) {

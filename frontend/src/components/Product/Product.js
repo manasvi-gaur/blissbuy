@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ProductCard from './ProductCard'
 /*
   This example requires some changes to your config:
@@ -20,6 +20,7 @@ import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useGetAllProductQuery } from '../../redux/api/product.api';
 
 const sortOptions = [
   { name: 'Price: Low to High', href: '#', current: false },
@@ -91,7 +92,6 @@ export default function Product() {
     const query = searchParem.toString();
         navigate({search:`${query}`})
   }
-
   return (
     <div className="bg-white">
       <div>
@@ -315,9 +315,7 @@ export default function Product() {
               <div className="lg:col-span-3">
                 <div className='flex flex-wrap justify-center bg-black py-5'>
                     <ProductCard />
-
                 </div>
-
               </div>
             </div>
           </section>
