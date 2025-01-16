@@ -4,6 +4,7 @@ import { RadioGroup } from "@headlessui/react";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../../redux/api/product.api";
+import { useAddProductToCartMutation } from "../../redux/api/cart.api";
 
 const callouts = [
   {
@@ -42,6 +43,7 @@ function classNames(...classes) {
 export default function ProductDetails() {
   const { id } = useParams();
   const [selectedColor, setSelectedColor] = useState();
+  const [addItemToCart,{error:errorCart,isError:isErrorCart}] = useAddProductToCartMutation();
   const {
     data: product,
     isSuccess,
@@ -50,7 +52,6 @@ export default function ProductDetails() {
   } = useGetProductByIdQuery(id);
   useEffect(() => {
     if (isSuccess) {
-      console.log(product);
       setSelectedSize(product.sizes[2]);
       setSelectedColor(product.color[0]);
     }
@@ -59,6 +60,14 @@ export default function ProductDetails() {
     }
   }, [isSuccess]);
 
+  const handleAddToCart = (productId,size) => {
+    addItemToCart({ productId,size });
+  }
+  useEffect(() => {
+    if (isErrorCart) {
+      console.log(errorCart);
+      }
+  },[isErrorCart]);
   const [selectedSize, setSelectedSize] = useState();
   return (
     <div className="bg-white">
@@ -258,9 +267,10 @@ export default function ProductDetails() {
                   </RadioGroup>
                 </div>
                 <Button
-                  type="submit"
+                  // type="submit"
                   className="mt-10 flex w-full items-center justify-center border-black px-8 py-3 text-base font-bold"
                   variant="outlined"
+                  onClick={() => handleAddToCart(product?._id,{...selectedSize, quantity:1})}
                 >
                   ADD TO CART
                 </Button>

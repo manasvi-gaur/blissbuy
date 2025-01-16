@@ -5,42 +5,17 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { state } from "../../Sampleprods/state";
 import { useGetCartQuery } from "../../redux/api/cart.api";
-const products = [
-  {
-    id: 1,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  {
-    id: 2,
-    name: "Medium Stuff Satchel",
-    href: "#",
-    color: "Blue",
-    price: "$32.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg",
-    imageAlt:
-      "Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.",
-  },
-  // More products...
-];
 
 export default function Cart({ open, setOpen }) {
-  //   const [open, setOpen] = useState(true)
   const {data, isSuccess} = useGetCartQuery();
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     console.log(cartItems);
-  //   }
-  // }, [isSuccess]);
+  // const [data, setData] = useState();
+  useEffect(() => {
+    if (isSuccess){
+      console.log(data.cartItems);
+      
+    }
+    console.log(data);
+  }, [data,isSuccess]);
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -102,12 +77,11 @@ export default function Cart({ open, setOpen }) {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {isSuccess && data.cartItems?.map((product) => (
-                              <li key={product.id} className="flex py-6">
+                            { isSuccess  && data?.cartItem?.length > 0 ?( data.cartItem?.map((cartItem) => (
+                              <li key={cartItem.product._id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={product.imageSrc}
-                                    alt={product.imageAlt}
+                                    src={cartItem.product.imageUrl}
                                     className="h-full w-full object-cover object-center"
                                   />
                                 </div>
@@ -117,33 +91,25 @@ export default function Cart({ open, setOpen }) {
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
                                         <a
-                                          href={product.href}
+                                          href={cartItem.product.imageUrl}
                                           style={{
                                             fontFamily: "Times-BoldItalic",
                                             color: "black",
                                           }}
                                         >
-                                          {product.name}
+                                          {cartItem.product.title}
                                         </a>
                                       </h3>
-                                      <p className="ml-4">{product.price}</p>
+                                      <p className="ml-4">{cartItem.price}</p>
                                     </div>
-                                    <p
-                                      className="mt-1 text-sm text-gray-500"
-                                      style={{
-                                        fontFamily: "Courier",
-                                        color: "gray",
-                                      }}
-                                    >
-                                      {product.color}
-                                    </p>
+                                    
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
                                     <p
                                       className="text-gray-500"
                                       style={{ fontFamily: "Courier" }}
                                     >
-                                      Qty {product.quantity}
+                                      Qty {cartItem.quantity}
                                     </p>
 
                                     <div className="flex">
@@ -158,7 +124,7 @@ export default function Cart({ open, setOpen }) {
                                   </div>
                                 </div>
                               </li>
-                            ))}
+                            ))):(<p>No items in cart</p>)}
                           </ul>
                         </div>
                       </div>

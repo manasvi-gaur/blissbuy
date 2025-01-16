@@ -38,7 +38,6 @@ async function findUserCart(userId) {
 
 async function addCartItem(userId, req) {
   try {
-    console.log(userId);
     const cart = await Cart.findOne({ user: userId });
     if (!cart) {
       throw new Error("Cart not found for the user");
@@ -46,25 +45,37 @@ async function addCartItem(userId, req) {
     const product = await Product.findById(req.productId);
     const isPresent = await CartItem.findOne({
       cart: cart._id,
-      product: product._id,
+      product: req.productId,
       userId,
     });
     if (!isPresent) {
       const cartItem = new CartItem({
         product: product._id,
         cart: cart._id,
-        quantity: 1,
+        quantity: req.size.quantity,
         userId,
         price: product.price,
-        size: req.size,
+        size: [req.size],
         discountedPrice: product.discountedPrice,
       });
       const createdCartItem = await cartItem.save();
       cart.cartItem.push(createdCartItem);
       await cart.save();
 
-      return "Item Added to cart";
+      return {message : "Item Added to cart"};
     }
+    isPresent.size.find((size) => {
+      if (size.name === req.size.name) {
+        size.quantity += Number(req.size.quantity);
+      } else {
+        isPresent.size.push(req.size);
+      }
+    });
+    isPresent.price += product.price;
+    isPresent.quantity+=req.size.quantity;
+    await isPresent.save();
+    return {message : "Item Updated to cart"};
+
   } catch (error) {
     throw new Error(error.message);
   }

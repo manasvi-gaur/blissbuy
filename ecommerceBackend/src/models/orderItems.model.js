@@ -11,8 +11,7 @@ const OrderItemsSchema= new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"users",
             require:"true"
-    }
-    ,
+    },
     product:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"products",
@@ -24,10 +23,12 @@ const OrderItemsSchema= new mongoose.Schema({
         type:Number,
         required:true
     },
-    size:{
-        type:String,
-      
-    },
+    size:[
+        {
+            name:{type:String},
+            quantity:{type:String}
+        }
+    ],
     quantity:{
         type:Number,
         required:true

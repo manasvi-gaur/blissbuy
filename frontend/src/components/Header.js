@@ -172,9 +172,9 @@ export default function Header() {
     if(isLogged){
       refetch();
     }
-    if(isUserDataSuccess){
-      console.log(data);
-    }
+    // if(isUserDataSuccess){
+    //   console.log(data);
+    // }
   }, [isLogged, refetch])
 
   return (

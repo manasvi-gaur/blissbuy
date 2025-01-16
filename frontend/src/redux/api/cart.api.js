@@ -7,18 +7,22 @@ export const cartApi = createApi({
         baseUrl: `${BASE_URL}/api/cart`,
         credentials: 'include',
     }),
+    tagTypes: ['Cart'],
     endpoints:(builder)=>({
         // find user cart
         getCart: builder.query({
             query: () => '/',
+            providesTags: ['Cart']
         }),
         // add product to cart
-        addProduct: builder.mutation({
-            query:() => ({
+        addProductToCart: builder.mutation({
+            query:({productId, size}) => ({
                 url: '/add',
-                method: 'POST',
-            })
+                method: 'PUT',
+                body : {productId, size}
+            }),
+            invalidatesTags: ['Cart']
         })
     })
 })
-export const { useGetCartQuery, useAddProductMutation } = cartApi;
+export const { useGetCartQuery, useAddProductToCartMutation } = cartApi;
