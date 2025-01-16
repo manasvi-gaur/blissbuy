@@ -5,13 +5,22 @@ async function updateCartItem(userId, cartItemId, cartItemData) {
   try {
     const item = await findCartItemById(cartItemId);
     const user = await userService.findUserById(item.userId);
+    console.log(cartItemData);
 
     if (!user) {
       throw new Error("User not found");
     }
     if (user._id.toString() === userId.toString()) {
-
-      item.quantity = cartItemData.quantity;
+      item.quantity += cartItemData.quantity;
+      item.size = item.size.map((size) => {
+        if (size._id.toString() === cartItemData.id.toString()) {
+          return {
+            ...size,
+            quantity: size.quantity + cartItemData.quantity,
+          };
+        }
+        return size;
+      })
       item.price = item.quantity * item.product.price;
       item.discountedPrice = item.quantity * item.product.discountedPrice;
       const updatedCartItem = await item.save();
@@ -35,7 +44,7 @@ async function removeCartItem(userId, cartItemId) {
 }
 
 async function findCartItemById(cartItemId) {
-  const cartItem = await CartItem.findById(cartItemId).populate('product');;
+  const cartItem = await CartItem.findById(cartItemId).populate("product");
   if (cartItem) {
     return cartItem;
   } else {

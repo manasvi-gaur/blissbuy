@@ -64,13 +64,16 @@ async function addCartItem(userId, req) {
 
       return {message : "Item Added to cart"};
     }
+    let found=false;
     isPresent.size.find((size) => {
       if (size.name === req.size.name) {
         size.quantity += Number(req.size.quantity);
-      } else {
-        isPresent.size.push(req.size);
+        found = true;
       }
     });
+    if(!found){
+      isPresent.size.push(req.size);
+    }
     isPresent.price += product.price;
     isPresent.quantity+=req.size.quantity;
     await isPresent.save();

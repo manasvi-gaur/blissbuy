@@ -4,25 +4,41 @@ import { BASE_URL } from "../../Utils/constant"
 export const cartApi = createApi({
     reducerPath: 'cartApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BASE_URL}/api/cart`,
+        baseUrl: `${BASE_URL}/api`,
         credentials: 'include',
     }),
     tagTypes: ['Cart'],
     endpoints:(builder)=>({
         // find user cart
         getCart: builder.query({
-            query: () => '/',
+            query: () => '/cart/',
             providesTags: ['Cart']
         }),
         // add product to cart
         addProductToCart: builder.mutation({
             query:({productId, size}) => ({
-                url: '/add',
+                url: '/cart/add',
                 method: 'PUT',
                 body : {productId, size}
             }),
             invalidatesTags: ['Cart']
-        })
+        }),
+        // now working with cartItem
+        updateCartItem:builder.mutation({
+            query:({cartId, id, quantity}) => ({
+                url:`/cart_items/${cartId}`,
+                method:'PUT', 
+                body:{id, quantity}
+            }),
+            invalidatesTags: ['Cart']
+        }),
+        removeCartItem:builder.mutation({
+            query:(id) => ({
+                url:`/cart_items/${id}`,
+                method:'DELETE',
+            }),
+            invalidatesTags: ['Cart']
+        }),
     })
 })
-export const { useGetCartQuery, useAddProductToCartMutation } = cartApi;
+export const { useGetCartQuery, useAddProductToCartMutation, useUpdateCartItemMutation, useRemoveCartItemMutation } = cartApi;

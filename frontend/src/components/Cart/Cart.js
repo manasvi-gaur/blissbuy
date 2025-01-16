@@ -2,20 +2,39 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { state } from "../../Sampleprods/state";
-import { useGetCartQuery } from "../../redux/api/cart.api";
+import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
+import RemoveTwoToneIcon from '@mui/icons-material/RemoveTwoTone';
+import {
+  useGetCartQuery,
+  useRemoveCartItemMutation,
+  useUpdateCartItemMutation,
+} from "../../redux/api/cart.api";
 
 export default function Cart({ open, setOpen }) {
-  const {data, isSuccess} = useGetCartQuery();
-  // const [data, setData] = useState();
+  const { data, isSuccess } = useGetCartQuery();
+  const [deleteCartItem] = useRemoveCartItemMutation();
+  const [updateCartItem] = useUpdateCartItemMutation();
+  const handleRemoveCartItem = (id) => {
+    deleteCartItem(id);
+  };
   useEffect(() => {
-    if (isSuccess){
+    if (isSuccess) {
       console.log(data.cartItems);
-      
     }
     console.log(data);
-  }, [data,isSuccess]);
+  }, [data, isSuccess]);
+
+  const handleIncDec = (cartId, id, type, quantity) => {
+    if (isSuccess) {
+      if(type=='inc'){
+        updateCartItem({cartId, id, quantity: 1})
+      }
+      else{
+        if(quantity==1) handleRemoveCartItem(cartId);
+        else updateCartItem({cartId, id, quantity: -1})
+      }
+    }
+  };
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -77,54 +96,93 @@ export default function Cart({ open, setOpen }) {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            { isSuccess  && data?.cartItem?.length > 0 ?( data.cartItem?.map((cartItem) => (
-                              <li key={cartItem.product._id} className="flex py-6">
-                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                  <img
-                                    src={cartItem.product.imageUrl}
-                                    className="h-full w-full object-cover object-center"
-                                  />
-                                </div>
+                            {isSuccess && data?.cartItem?.length > 0 ? (
+                              data.cartItem?.map((cartItem) => (
+                                <li
+                                  key={cartItem.product._id}
+                                  className="flex py-6"
+                                >
+                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                    <img
+                                      src={cartItem.product.imageUrl}
+                                      className="h-full w-full object-cover object-center"
+                                    />
+                                  </div>
 
-                                <div className="ml-4 flex flex-1 flex-col">
-                                  <div>
-                                    <div className="flex justify-between text-base font-medium text-gray-900">
-                                      <h3>
-                                        <a
-                                          href={cartItem.product.imageUrl}
-                                          style={{
-                                            fontFamily: "Times-BoldItalic",
-                                            color: "black",
-                                          }}
+                                  <div className="ml-4 flex flex-1 flex-col">
+                                    <div>
+                                      <div className="w-fll grid grid-cols-[75%_25%] text-base font-medium text-gray-900">
+                                        <h3>
+                                          <a
+                                            href={cartItem.product.imageUrl}
+                                            style={{
+                                              fontFamily: "Times-BoldItalic",
+                                              color: "black",
+                                            }}
+                                          >
+                                            {cartItem.product.title}
+                                          </a>
+                                        </h3>
+                                        <p className="ml-2 text-xs">Rs. {cartItem.price}</p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-end justify-between text-sm">
+                                      <div>
+                                        {cartItem.size.map((size) => (
+                                          <div
+                                            className="text-gray-500 mt-2"
+                                            style={{ fontFamily: "Courier" }}
+                                          >
+                                            Size: {size.name}
+                                            <button
+                                            className="ml-1"
+                                              onClick={() =>
+                                                handleIncDec(
+                                                  cartItem._id,
+                                                  size._id,
+                                                  "dec",
+                                                  size.quantity
+                                                )
+                                              }
+                                            >
+                                            <RemoveTwoToneIcon className="border border-black rounded-md mx-2" fontSize="small"/>
+                                            </button>
+                                            {size.quantity}
+                                            <button
+                                              onClick={() =>
+                                                handleIncDec(
+                                                  cartItem._id,
+                                                  size._id,
+                                                  "inc",
+                                                  size.quantity
+                                                )
+                                              }
+                                            >
+                                              <AddTwoToneIcon className="border border-black rounded-md mx-2" fontSize="small"/>
+                                            </button>
+                                          </div>
+                                        ))}
+                                      </div>
+
+                                      <div className="flex">
+                                        <button
+                                          style={{ color: "#9D6134" }}
+                                          type="button"
+                                          onClick={() =>
+                                            handleRemoveCartItem(cartItem._id)
+                                          }
+                                          className="font-medium text-indigo-600 hover:text-indigo-500"
                                         >
-                                          {cartItem.product.title}
-                                        </a>
-                                      </h3>
-                                      <p className="ml-4">{cartItem.price}</p>
-                                    </div>
-                                    
-                                  </div>
-                                  <div className="flex flex-1 items-end justify-between text-sm">
-                                    <p
-                                      className="text-gray-500"
-                                      style={{ fontFamily: "Courier" }}
-                                    >
-                                      Qty {cartItem.quantity}
-                                    </p>
-
-                                    <div className="flex">
-                                      <button
-                                        style={{ color: "#9D6134" }}
-                                        type="button"
-                                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                                      >
-                                        Remove
-                                      </button>
+                                          Remove
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </li>
-                            ))):(<p>No items in cart</p>)}
+                                </li>
+                              ))
+                            ) : (
+                              <p>No items in cart</p>
+                            )}
                           </ul>
                         </div>
                       </div>
@@ -133,7 +191,7 @@ export default function Cart({ open, setOpen }) {
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p style={{ fontFamily: "Times-Italic" }}>Subtotal</p>
-                        <p>${data?.totalPrice??0}</p>
+                        <p>Rs. {data?.totalPrice ?? 0}</p>
                       </div>
                       <p
                         className="mt-0.5 text-sm text-gray-500"

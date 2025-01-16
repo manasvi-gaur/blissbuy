@@ -19,8 +19,11 @@ import CustomerRoutes from './Routes/CustomerRoutes';
 import { useEffect } from 'react';
 import { getLoginStatusFromCookies } from './Utils/helper/auth';
 import { login, logout } from './redux/slices/authSlice';
+import { useGetCartQuery } from './redux/api/cart.api';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const { data, isLoading, isError } = useGetCartQuery();
   return (
     <div >
     
