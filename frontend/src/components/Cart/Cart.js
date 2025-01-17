@@ -9,9 +9,11 @@ import {
   useRemoveCartItemMutation,
   useUpdateCartItemMutation,
 } from "../../redux/api/cart.api";
+import { useSelector } from "react-redux";
 
 export default function Cart({ open, setOpen }) {
-  const { data, isSuccess } = useGetCartQuery();
+  const loggedIn = useSelector((state) => state.auth.isLogged);
+  const { data, isSuccess, refetch } = useGetCartQuery({skip: !loggedIn});
   const [deleteCartItem] = useRemoveCartItemMutation();
   const [updateCartItem] = useUpdateCartItemMutation();
   const handleRemoveCartItem = (id) => {
@@ -23,6 +25,12 @@ export default function Cart({ open, setOpen }) {
     }
     console.log(data);
   }, [data, isSuccess]);
+  
+  useEffect(() => {
+    if (loggedIn) {
+      refetch();
+    }
+  }, [loggedIn]);
 
   const handleIncDec = (cartId, id, type, quantity) => {
     if (isSuccess) {

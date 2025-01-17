@@ -23,7 +23,6 @@ import { useGetCartQuery } from './redux/api/cart.api';
 import { useSelector } from 'react-redux';
 
 function App() {
-  const { data, isLoading, isError } = useGetCartQuery();
   return (
     <div >
     
