@@ -157,16 +157,6 @@ export default function DeliveryAddForm() {
             </div>
           </div>
         </div>
-
-        <div className="mt-0.4 mb-3">
-          <a
-            style={{ backgroundColor: "#BD446B", width: "90vmin" }}
-            href="#"
-            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            Pay now
-          </a>
-        </div>
       </div>
     </form>
   );

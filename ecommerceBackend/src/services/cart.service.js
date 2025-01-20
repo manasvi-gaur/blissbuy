@@ -62,7 +62,7 @@ async function addCartItem(userId, req) {
       cart.cartItem.push(createdCartItem);
       await cart.save();
 
-      return {message : "Item Added to cart"};
+      return createdCartItem;
     }
     let found=false;
     isPresent.size.find((size) => {
@@ -77,7 +77,7 @@ async function addCartItem(userId, req) {
     isPresent.price += product.price;
     isPresent.quantity+=req.size.quantity;
     await isPresent.save();
-    return {message : "Item Updated to cart"};
+    return isPresent;
 
   } catch (error) {
     throw new Error(error.message);

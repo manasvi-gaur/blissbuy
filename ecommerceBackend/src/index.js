@@ -38,4 +38,7 @@ app.use("/api/cart_items", cartItemRouters);
 const orderRouters = require("./routes/order.route.js");
 app.use("/api/order", orderRouters);
 
+const paymentRouters = require("./routes/payment.routes.js");
+app.use("/api/payments", paymentRouters);
+
 module.exports = app;
