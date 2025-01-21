@@ -4,12 +4,16 @@ import { BASE_URL } from "../../Utils/constant"
 export const paymentApi = createApi({
     reducerPath: 'paymentApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BASE_URL}/api/payment`,
+        baseUrl: `${BASE_URL}/api/payments`,
         credentials: 'include',
     }),
     endpoints: (builder)=>({
         createPaymentLink : builder.mutation({
-            query : (id) => `/${id}`,
+            query : (id)=>({
+                url:`/${id}`,
+                method: 'POST',
+            })
+            
         }),
         updatePaymentInformation : builder.query({
             query : () => '/',

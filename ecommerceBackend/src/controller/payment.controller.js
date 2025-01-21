@@ -1,9 +1,11 @@
 const paymentService = require('../services/paymentService.js');
+const orderService = require('../services/orderService.js');
 
 const createPaymentLink = async (req, res) => {
     try {
         console.log(req.params.id);
         const paymentLink = await paymentService.createPaymentLink(req.params.id);
+        const order = orderService.placeOrder(req.params.id);
         return res.status(200).send(paymentLink);
     } catch (error) {
         return res.status(400).send(error.message);

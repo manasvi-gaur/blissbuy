@@ -73,6 +73,8 @@ export default function OrderSummary() {
             <p style={{ fontFamily: "Courier-Bold", fontSize: "4.5vmin"}}>Total</p>
             <p style={{ marginLeft: "6rem", fontSize: "4.5vmin"}}>Rs. {data?.totalPrice}</p>
           </div>
+          <div className="mt-0.4 mb-3">
+        </div>
     </div>
   );
 }

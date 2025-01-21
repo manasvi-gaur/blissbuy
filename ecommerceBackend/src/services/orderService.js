@@ -5,16 +5,21 @@ const Address = require("../models/address.model.js");
 async function createOrder(user, shipAddress) {
   let address;
   if (shipAddress._id) {
+    console.log(true);
     let existAddress = await Address.findById(shipAddress._id);
     address = existAddress;
   } else {
-    address = new Address(shipAddress);
+    console.log(false);
+    address = new Address({...shipAddress, user: user._id});
     address.user = user;
     await address.save();
+    const ch = await Address.findById(address._id);
+    console.log(ch==undefined?false:true);
     user.addresses.push(address);
     await user.save();
   }
   const cart = await cartService.findUserCart(user._id);
+  console.log(cart);
   const orderItems = [];
   for (let item of cart.cartItem) {
     const orderItem = new Order_Items({

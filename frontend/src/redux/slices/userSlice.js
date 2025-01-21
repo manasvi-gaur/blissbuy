@@ -7,9 +7,6 @@ export const userSlice = createSlice({
         user: getUserDataFromCookies(),
     },
     reducers: {
-        // setUser: (state, action) => {
-        //     state.user = action.payload;
-        // },
         fetchUserFromCookies: (state) => {
             const userData = getUserDataFromCookies();
             state.user = userData;

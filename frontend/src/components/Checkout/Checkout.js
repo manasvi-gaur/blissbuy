@@ -1,8 +1,34 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import DeliveryAddForm from "./DeliveryAddForm";
 import OrderSummary from "./OrderSummary";
+import { orderApi, useCreateOrderMutation } from "../../redux/api/order.api";
+import { useReducer } from "react";
+import { useGetUserQuery } from "../../redux/api/user.api";
+import { useCreatePaymentLinkMutation } from "../../redux/api/payment.api";
+import { useNavigate } from "react-router-dom";
 
 export default function () {
+  const { data, isSuccess, isError, error } = useGetUserQuery();
+  const formRef = useRef(null);
+  const [createOrder] = useCreateOrderMutation();
+  const [createPaymentLink] = useCreatePaymentLinkMutation();
+  const handlePayment = async (event) => {
+    const data = new FormData(formRef.current);
+    const userData = {
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+      mobileNo: data.get("mobileNo"),
+      streetAddress: data.get("streetAddress"),
+      city: data.get("city"),
+      state: data.get("state"),
+      zipcode: data.get("postal-code"),
+    };
+    console.log(userData)
+    const response = await createOrder(userData).unwrap();
+    const payResonse = await createPaymentLink(response._id).unwrap();
+    console.log(payResonse);
+    window.location.href = `${payResonse.paymentLinkUrl}`;
+  };
   return (
     <div style={{ backgroundColor: "white", padding: "1rem" }}>
       <h1
@@ -37,8 +63,19 @@ export default function () {
               boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
-            <DeliveryAddForm />
+            <DeliveryAddForm formRef={formRef} />
           </div>
+          <button
+            onClick={handlePayment}
+            style={{
+              backgroundColor: "#BD446B",
+              width: "70vmin",
+              marginTop: "3vmin",
+            }}
+            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+          >
+            Pay now
+          </button>
         </div>
 
         {/* Order Summary */}
@@ -53,14 +90,6 @@ export default function () {
           className="flex flex-col items-center w-full lg:max-w-2xl mx-auto"
         >
           <OrderSummary />
-        </div>
-        <div className="mt-0.4 mb-3">
-          <button
-            style={{ backgroundColor: "#BD446B", width: "90vmin" }}
-            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            Pay now
-          </button>
         </div>
       </section>
     </div>

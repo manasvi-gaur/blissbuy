@@ -12,7 +12,7 @@ export const orderApi = createApi({
             query : (body) => ({
                 url: '/',
                 method: 'POST',
-                body,
+                body
             })
         }),
         orderHistory:builder.query({
