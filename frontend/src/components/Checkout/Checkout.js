@@ -7,16 +7,13 @@ import {
   useCreatePaymentLinkMutation,
   useUpdatePaymentInformationMutation,
 } from "../../redux/api/payment.api";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useRemoveAllCartItemsMutation } from "../../redux/api/cart.api";
 export default function () {
   const formRef = useRef(null);
   const [createOrder] = useCreateOrderMutation();
   const [createPaymentLink] = useCreatePaymentLinkMutation();
-  const [
-    updatePaymentInformation,
-    { isLoading, isError, isSuccess, error, data },
-  ] = useUpdatePaymentInformationMutation();
-  const [paymentData, setPaymentData] = useState(null);
+  const [clearCart] = useRemoveAllCartItemsMutation();
   const location = useLocation();
   const handlePayment = async (event) => {
     const data = new FormData(formRef.current);
@@ -35,7 +32,7 @@ export default function () {
 
     if (!isValid) {
       console.error("Please fill all the fields.");
-      return; // Return if any field is empty or missing
+      return;
     }
 
     const response = await createOrder(userData).unwrap();
@@ -43,21 +40,13 @@ export default function () {
     window.location.href = `${payResonse.paymentLinkUrl}`;
   };
 
-  // useEffect(async () => {
-  //   const queryParams = new URLSearchParams(location.search);
-  //   const paymentLinkId = queryParams.get("razorpay_payment_link_id");
-  //   const paymentId = queryParams.get("razorpay_payment_id");
-  //   // const signature = queryParams.get('signature');
-  //   if (paymentId && paymentLinkId) {
-  //     setPaymentData({ paymentId, paymentLinkId });
-  //   }
-  //   if (paymentData.paymentId && paymentData.paymentLinkId) {
-  //     await updatePaymentInformation({
-  //       payment_id: paymentData.paymentId,
-  //       paymentLinkId,
-  //     }).unwrap();
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const paymentLinkStatus = queryParams.get("razorpay_payment_link_status");
+    if (paymentLinkStatus === "paid") {
+      clearCart();
+    }
+  }, [location, clearCart]); 
   return (
     <div style={{ backgroundColor: "white", padding: "1rem" }}>
       <h1

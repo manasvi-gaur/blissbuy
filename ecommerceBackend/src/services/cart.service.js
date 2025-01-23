@@ -64,21 +64,20 @@ async function addCartItem(userId, req) {
 
       return createdCartItem;
     }
-    let found=false;
+    let found = false;
     isPresent.size.find((size) => {
       if (size.name === req.size.name) {
         size.quantity += Number(req.size.quantity);
         found = true;
       }
     });
-    if(!found){
+    if (!found) {
       isPresent.size.push(req.size);
     }
     isPresent.price += product.price;
-    isPresent.quantity+=req.size.quantity;
+    isPresent.quantity += req.size.quantity;
     await isPresent.save();
     return isPresent;
-
   } catch (error) {
     throw new Error(error.message);
   }
@@ -87,19 +86,15 @@ async function addCartItem(userId, req) {
 async function clearCart(user) {
   try {
     const userId = user._id;
-    console.log("---------------------------------------------------------------------------------------------------");
     console.log(userId);
-    await CartItem.deleteMany({userId})
+    await CartItem.deleteMany({ userId });
     let cart = await Cart.findOne({ user: userId });
-    if (cart) {
-      cart.items = []; 
-      await cart.save(); 
-    }
-    return ;
+    cart.cartItem = [];
+    await cart.save();
+    return;
   } catch (error) {
     throw new Error(error.message);
   }
 }
 
-
-module.exports = { createCart, findUserCart, addCartItem , clearCart};
+module.exports = { createCart, findUserCart, addCartItem, clearCart };

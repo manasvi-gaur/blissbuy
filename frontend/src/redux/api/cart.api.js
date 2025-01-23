@@ -46,6 +46,7 @@ export const cartApi = createApi({
                 url: '/cart/cartEmpty',
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Cart']
         })
     })
 })

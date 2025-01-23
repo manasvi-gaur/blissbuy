@@ -28,7 +28,6 @@ const createPaymentLink = async(orderId)=>{
         const resData = {
             paymentLinkId,
             paymentLinkUrl,
-            orderId
         }
         return resData;
     } catch (error) {
@@ -36,25 +35,17 @@ const createPaymentLink = async(orderId)=>{
     }
 }
 
-const updatePaymentInformation=  async({ payment_id,paymentLinkId })=>{
+const updatePaymentInformation=  async({ payment_id,order_id })=>{
     const paymentId = payment_id;
-    // const orderId = order_id;
-    console.log(paymentId);;
-    // console.log(orderId);
+    const orderId = order_id;
     try {
-        // const order = await orderService.findOrderById(orderId);
-        console.log(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
-        console.log("done till here")
+        const order = await orderService.findOrderById(orderId);
         const payment = await razorPayClient.payments.fetch(paymentId);
-        const paymentLink = await razorpayClient.paymentLink.fetch(paymentLinkId);
         if(payment.status === 'captured'){
-            // order.paymentDetails.paymentId = paymentId;
-            // order.paymentDetails.status = 'COMPLETED';
-            // order.orderStatus = 'PLACED';
-            // await order.save();
-            console.log("**********************************************************888")
-            // console.log(order.user);
-            // await cartService.clearCart(order.user);
+            order.paymentDetails.paymentId = paymentId;
+            order.paymentDetails.status = 'COMPLETED';
+            order.orderStatus = 'PLACED';
+            await order.save();
         }
         const resData = {message: 'Your order placed successfully',success: true};
         return resData;
