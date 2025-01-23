@@ -12,6 +12,7 @@ async function createProduct(reqData) {
     });
     await topLevel.save();
   }
+  console.log(topLevel._id)
   let secondLevel = await Category.findOne({
     name: reqData.secondLevelCategory,
     parentCategory: topLevel._id,
@@ -153,6 +154,62 @@ async function createMultipleProduct(products) {
   }
 }
 
+async function getCategorisedProducts(topLevelCategory, secondLevelCategory, thirdLevelCategory, filters) {
+  let query = Product.find().populate("category");
+
+  const topLevel = await Category.findOne({ name: topLevelCategory, level: 1 });
+  console.log(topLevel)
+  if (!topLevel) {
+    return [];
+  }
+  
+  const secondLevel = await Category.findOne({ name: secondLevelCategory, parentCategory: topLevel._id, level: 2 });
+  console.log(secondLevel)
+  if (!secondLevel) {
+    return [];
+  }
+  
+  const thirdLevel = await Category.findOne({ name: thirdLevelCategory, parentCategory: secondLevel._id, level: 3 });
+  console.log(thirdLevel)
+  if (!thirdLevel) {
+    return [];
+  }
+
+  query = query.where("category").equals(thirdLevel._id);
+  console.log(query)
+
+  Object.keys(filters).forEach(filter => {
+    const value = filters[filter];
+    if (filter === 'brand' || filter === 'sizes') {
+      query = query.where(filter).in(value.split(","));
+    } else if (filter === 'color') {
+      const colorSet = new Set(value.split(",").map(color => color.trim().toLowerCase()));
+      const colorRegex = colorSet.size > 0 ? new RegExp([...colorSet].join("|"), "i") : null;
+      query = query.where(filter).regex(colorRegex);
+    } else if (filter === 'minPrice') {
+      query = query.where("discountedPrice").gte(value);
+    } else if (filter === 'maxPrice') {
+      query = query.where("discountedPrice").lte(value);
+    } else if (filter === 'minDiscount') {
+      query = query.where("discountPresent").gte(value);
+    } else if (filter === 'stock') {
+      if (value === "in_stock") {
+        query = query.where("quantity").gte(0);
+      } else if (value === "out_of_stock") {
+        query = query.where("quantity").gt(1);
+      }
+    } else if (filter === 'sort') {
+      const sortDirection = value === "price_high" ? -1 : 1;
+      query = query.sort({ discountedPrice: sortDirection });
+    } else {
+      query = query.where(filter).equals(value);
+    }
+  });
+
+  const products = await query.exec();
+  return products;
+}
+
 module.exports = {
   createProduct,
   createMultipleProduct,
@@ -160,4 +217,5 @@ module.exports = {
   updateProduct,
   getAllProducts,
   findProductById,
+  getCategorisedProducts, // Add the new method to the exports
 };

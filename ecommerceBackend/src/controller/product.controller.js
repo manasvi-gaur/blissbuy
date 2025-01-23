@@ -60,6 +60,19 @@ const createMultipleProduct = async (req, res) => {
   }
 };
 
+const getCategorisedProducts = async (req, res) => {
+  try {
+    const { topLevelCategory, secondLevelCategory, thirdLevelCategory } = req.params;
+    const filters = req.query;
+    console.log({ topLevelCategory, secondLevelCategory, thirdLevelCategory })
+    console.log(filters)
+    const products = await productService.getCategorisedProducts(topLevelCategory, secondLevelCategory, thirdLevelCategory, filters);
+    return res.status(200).send(products);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   createProduct,
   deleteProduct,
@@ -67,4 +80,5 @@ module.exports = {
   getAllProducts,
   createMultipleProduct,
   findProductById,
+  getCategorisedProducts,
 };

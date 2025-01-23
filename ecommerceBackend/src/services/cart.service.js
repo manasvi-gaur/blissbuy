@@ -84,4 +84,22 @@ async function addCartItem(userId, req) {
   }
 }
 
-module.exports = { createCart, findUserCart, addCartItem };
+async function clearCart(user) {
+  try {
+    const userId = user._id;
+    console.log("---------------------------------------------------------------------------------------------------");
+    console.log(userId);
+    await CartItem.deleteMany({userId})
+    let cart = await Cart.findOne({ user: userId });
+    if (cart) {
+      cart.items = []; 
+      await cart.save(); 
+    }
+    return ;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+
+module.exports = { createCart, findUserCart, addCartItem , clearCart};

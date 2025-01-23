@@ -66,7 +66,7 @@ export default function ProductDetails() {
   useEffect(() => {
     if (isErrorCart) {
       console.log(errorCart);
-      }
+    }
   },[isErrorCart]);
   const [selectedSize, setSelectedSize] = useState();
   return (

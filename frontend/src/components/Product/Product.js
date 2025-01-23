@@ -79,7 +79,7 @@ export default function Product() {
         filterValue=filterValue[0].split(",").filter((item)=>item!==value);
 
         if(filterValue.length===0){
-            searchParem.delete(sectionId)
+          searchParem.delete(sectionId)
         }
     }else{
         filterValue.push(value)

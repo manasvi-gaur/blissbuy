@@ -21,7 +21,18 @@ const addItemToCart = async (req, res) => {
   }
 };
 
+const clearCart = async (req, res) => {
+  const user = req.user;
+  try {
+    await cartService.clearCart(user);
+    return res.status(200).send({message:"Cart Item Empty"});
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   findUserCart,
   addItemToCart,
+  clearCart
 };

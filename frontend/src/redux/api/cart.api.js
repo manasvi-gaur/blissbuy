@@ -32,6 +32,7 @@ export const cartApi = createApi({
             }),
             invalidatesTags: ['Cart']
         }),
+        // remove product from cart
         removeCartItem:builder.mutation({
             query:(id) => ({
                 url:`/cart_items/${id}`,
@@ -39,6 +40,13 @@ export const cartApi = createApi({
             }),
             invalidatesTags: ['Cart']
         }),
+        // remove all cart items
+        removeAllCartItems:builder.mutation({
+            query: () => ({
+                url: '/cart/cartEmpty',
+                method: 'DELETE',
+            }),
+        })
     })
 })
-export const { useGetCartQuery, useAddProductToCartMutation, useUpdateCartItemMutation, useRemoveCartItemMutation } = cartApi;
+export const { useGetCartQuery, useAddProductToCartMutation, useUpdateCartItemMutation, useRemoveCartItemMutation,useRemoveAllCartItemsMutation } = cartApi;

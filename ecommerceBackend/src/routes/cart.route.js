@@ -6,5 +6,6 @@ const authenticate = require("../middleware/authenticate.js");
 
 router.get("/", authenticate, cartController.findUserCart);
 router.put("/add", authenticate, cartController.addItemToCart);
+router.delete("/cartEmpty",authenticate,cartController.clearCart);
 
 module.exports = router;

@@ -7,6 +7,6 @@ const authenticate = require('../middleware/authenticate.js');
 
 
 router.post("/:id",authenicate,paymentController.createPaymentLink);
-router.get("/",authenticate,paymentController.updatePaymentInformation);
+router.post("/",authenticate,paymentController.updatePaymentInformation);
 
 module.exports = router;

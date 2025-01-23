@@ -112,7 +112,7 @@ export default function Cart({ open, setOpen }) {
                                 >
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <img
-                                      src={cartItem.product.imageUrl}
+                                      src={cartItem.product?.imageUrl}
                                       className="h-full w-full object-cover object-center"
                                     />
                                   </div>

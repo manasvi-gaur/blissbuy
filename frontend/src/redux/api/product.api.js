@@ -7,15 +7,20 @@ export const productApi = createApi({
         baseUrl: `${BASE_URL}/api/products`,
         credentials: 'include',
     }),
-    endpoints:(builder)=>({
+    endpoints: (builder) => ({
         getAllProduct: builder.query({
             query: () => '/',
         }),
         getProductById: builder.query({
-            // params in body in product
             query: (id) => `id/${id}`,
         }),
-    })
-
+        getCategorisedProducts: builder.query({
+            query: ({ topLevelCategory, secondLevelCategory, thirdLevelCategory, filters }) => {
+                const queryString = new URLSearchParams(filters).toString();
+                return `${topLevelCategory}/${secondLevelCategory}/${thirdLevelCategory}?${queryString}`;
+            },
+        }),
+    }),
 })
- export const {useGetAllProductQuery,useGetProductByIdQuery} = productApi
+
+export const { useGetAllProductQuery, useGetProductByIdQuery, useGetCategorisedProductsQuery } = productApi

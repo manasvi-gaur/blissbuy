@@ -1,17 +1,23 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DeliveryAddForm from "./DeliveryAddForm";
 import OrderSummary from "./OrderSummary";
 import { orderApi, useCreateOrderMutation } from "../../redux/api/order.api";
-import { useReducer } from "react";
 import { useGetUserQuery } from "../../redux/api/user.api";
-import { useCreatePaymentLinkMutation } from "../../redux/api/payment.api";
-import { useNavigate } from "react-router-dom";
-
+import {
+  useCreatePaymentLinkMutation,
+  useUpdatePaymentInformationMutation,
+} from "../../redux/api/payment.api";
+import { useLocation, useNavigate } from "react-router-dom";
 export default function () {
-  const { data, isSuccess, isError, error } = useGetUserQuery();
   const formRef = useRef(null);
   const [createOrder] = useCreateOrderMutation();
   const [createPaymentLink] = useCreatePaymentLinkMutation();
+  const [
+    updatePaymentInformation,
+    { isLoading, isError, isSuccess, error, data },
+  ] = useUpdatePaymentInformationMutation();
+  const [paymentData, setPaymentData] = useState(null);
+  const location = useLocation();
   const handlePayment = async (event) => {
     const data = new FormData(formRef.current);
     const userData = {
@@ -23,12 +29,35 @@ export default function () {
       state: data.get("state"),
       zipcode: data.get("postal-code"),
     };
-    console.log(userData)
+    const isValid = Object.values(userData).every(
+      (value) => value && value.trim() !== ""
+    );
+
+    if (!isValid) {
+      console.error("Please fill all the fields.");
+      return; // Return if any field is empty or missing
+    }
+
     const response = await createOrder(userData).unwrap();
     const payResonse = await createPaymentLink(response._id).unwrap();
-    console.log(payResonse);
     window.location.href = `${payResonse.paymentLinkUrl}`;
   };
+
+  // useEffect(async () => {
+  //   const queryParams = new URLSearchParams(location.search);
+  //   const paymentLinkId = queryParams.get("razorpay_payment_link_id");
+  //   const paymentId = queryParams.get("razorpay_payment_id");
+  //   // const signature = queryParams.get('signature');
+  //   if (paymentId && paymentLinkId) {
+  //     setPaymentData({ paymentId, paymentLinkId });
+  //   }
+  //   if (paymentData.paymentId && paymentData.paymentLinkId) {
+  //     await updatePaymentInformation({
+  //       payment_id: paymentData.paymentId,
+  //       paymentLinkId,
+  //     }).unwrap();
+  //   }
+  // }, [location]);
   return (
     <div style={{ backgroundColor: "white", padding: "1rem" }}>
       <h1

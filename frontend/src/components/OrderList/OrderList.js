@@ -73,51 +73,58 @@ export default function OrderList({ open, setOpenOrderList }) {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {data?.map((Order) => (
-                              <>
-                                {Order.orderItems?.map((orderItem)=>(
-                                <li
-                                  key={orderItem.product._id}
-                                  className="flex py-6"
-                                >
-                                  <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                    <img
-                                      src={orderItem.product.imageUrl}
-                                      className="h-full w-full object-cover object-center"
-                                    />
-                                  </div>
-
-                                  <div className="ml-4 flex flex-1 flex-col">
-                                    <div>
-                                      <div className="flex justify-between text-base font-medium text-gray-900">
-                                        <h3>
-                                          <a
-                                            href={orderItem.product.imageUrl}
-                                            style={{
-                                              fontFamily: "Times-BoldItalic",
-                                              color: "black",
-                                            }}
-                                          >
-                                            {orderItem.product.title}
-                                          </a>
-                                        </h3>
+                            {isSuccess ? (
+                              data?.map((Order) => (
+                                <>
+                                  {Order.orderItems?.map((orderItem) => (
+                                    <li
+                                      key={orderItem.product._id}
+                                      className="flex py-6"
+                                    >
+                                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                        <img
+                                          src={orderItem.product.imageUrl}
+                                          className="h-full w-full object-cover object-center"
+                                        />
                                       </div>
-                                      {/* <p className="mt-1 text-sm text-gray-500" style={{fontFamily:"Courier",color:"gray"}}>{product.color}</p> */}
-                                    </div>
-                                    <div className="flex flex-1 items-end justify-between text-sm">
-                                      <p
-                                        className="text-gray-500"
-                                        style={{ fontFamily: "Courier" }}
-                                      >
-                                        Qty {orderItem.quantity}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </li>
-                                ))}
-                                {/* <p style={{color:"#BD446B"}} className="ml-4">{orderItem.orderStatus}</p> */}
-                              </>
-                            ))}
+
+                                      <div className="ml-4 flex flex-1 flex-col">
+                                        <div>
+                                          <div className="flex justify-between text-base font-medium text-gray-900">
+                                            <h3>
+                                              <a
+                                                href={
+                                                  orderItem.product.imageUrl
+                                                }
+                                                style={{
+                                                  fontFamily:
+                                                    "Times-BoldItalic",
+                                                  color: "black",
+                                                }}
+                                              >
+                                                {orderItem.product.title}
+                                              </a>
+                                            </h3>
+                                          </div>
+                                          {/* <p className="mt-1 text-sm text-gray-500" style={{fontFamily:"Courier",color:"gray"}}>{product.color}</p> */}
+                                        </div>
+                                        <div className="flex flex-1 items-end justify-between text-sm">
+                                          <p
+                                            className="text-gray-500"
+                                            style={{ fontFamily: "Courier" }}
+                                          >
+                                            Qty {orderItem.quantity}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  ))}
+                                  {/* <p style={{color:"#BD446B"}} className="ml-4">{orderItem.orderStatus}</p> */}
+                                </>
+                              ))
+                            ) : (
+                              <div>No Order Yet</div>
+                            )}
                           </ul>
                         </div>
                       </div>
