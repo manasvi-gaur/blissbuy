@@ -1,11 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { BASE_URL } from "../../Utils/constant"
+import { getTokenFromLocalStorage } from "../../Utils/helper/auth";
 
 export const cartApi = createApi({
     reducerPath: 'cartApi',
     baseQuery: fetchBaseQuery({
         baseUrl: `${BASE_URL}/api`,
         credentials: 'include',
+        prepareHeaders: (headers) => {
+            const token = getTokenFromLocalStorage();
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
     }),
     tagTypes: ['Cart'],
     endpoints:(builder)=>({

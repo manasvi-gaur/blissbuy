@@ -30,9 +30,21 @@ const login = async (req, res) => {
       return res.status(401).send({ message: "Invalid Password..." });
     }
     const jwt = jwtProvider.generateToken(user._id);
-        res.cookie("jwt",jwt,{httpOnly:true, expires: new Date(Date.now() + 48*60*60*1000)});
-        res.cookie("isLogged",true);
-        return res.status(290).send({jwt,message:"login success"});
+    // res.cookie("jwt", jwt, {
+    //   httpOnly: true,
+    //   domain: "blissbuy.vercel.app",
+    //   path: "/",
+    //   // secure: true,
+    //   sameSite: "None", // Added SameSite attribute
+    //   expires: new Date(Date.now() + 48 * 60 * 60 * 1000),
+    // });
+    // res.cookie("isLogged", true, {
+    //   domain: "blissbuy.vercel.app",
+    //   path: "/",
+    //   // secure: true,
+    //   sameSite: "None", // Added SameSite attribute
+    // });
+    return res.status(200).send({ jwt,userId:user._id,message: "login success" }); // Changed status code to 200
   } catch (error) {
     return res.status(500).send({ error: error.message });
   }

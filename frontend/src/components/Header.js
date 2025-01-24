@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import logo from "../components/logo.png";
 import { Fragment, useState } from "react";
 import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -14,8 +15,9 @@ import OrderList from "./OrderList/OrderList";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import AuthModal from "../Auth/AuthModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetUserQuery } from "../redux/api/user.api";
+import { logout } from "../redux/slices/authSlice";
 
 const navigation = {
   categories: [
@@ -154,6 +156,7 @@ function classNames(...classes) {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch  = useDispatch();
   const [openCart, setOpenCart] = useState(false);
   const [openOrderList, setOpenOrderList] = useState(false);
   const [openAuthModal, setOpenAuthModal] = React.useState(false);
@@ -172,9 +175,6 @@ export default function Header() {
     if(isLogged){
       refetch();
     }
-    // if(isUserDataSuccess){
-    //   console.log(data);
-    // }
   }, [isLogged, refetch])
 
   return (
@@ -651,6 +651,18 @@ export default function Header() {
                   </button>
                 </div>
               </div>
+              {/* {isLogged ? (<div className="ml-4 flow-root lg:ml-6">
+                <button
+                    onClick={dispatch(logout())}
+                    className="group -m-2 flex items-center p-2"
+                  >
+                    <LogoutIcon
+                      className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+                ):(<div></div>)} */}
             </div>
           </div>
         </nav>

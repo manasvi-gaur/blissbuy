@@ -1,11 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { BASE_URL } from "../../Utils/constant"
+import { getTokenFromLocalStorage } from "../../Utils/helper/auth";
 
 export const productApi = createApi({
     reducerPath: 'productApi',
     baseQuery: fetchBaseQuery({
         baseUrl: `${BASE_URL}/api/products`,
         credentials: 'include',
+        prepareHeaders: (headers) => {
+            const token = getTokenFromLocalStorage();
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
     }),
     endpoints: (builder) => ({
         getAllProduct: builder.query({
