@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/:path*",
-        "destination": "http://localhost:5454/:path*"
+        "destination": "https://blissbuy.onrender.com/:path*"
       }
     ]
   }
