@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../../Utils/constant";
-import { getTokenFromLocalStorage } from "../../Utils/helper/auth";
 
 export const authApi = createApi({
     reducerPath: 'authApi',

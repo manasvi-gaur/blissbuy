@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken")
 const SECRET_KEY = "mgfghjdbcnjx"
 
 const generateToken  = (userId)=>{
-    const  token = jwt.sign({userId:userId},SECRET_KEY,{expiresIn:"48h"})
+    const  token = jwt.sign({userId:userId},SECRET_KEY,{expiresIn:"72h"})
     return token;
 }
 
