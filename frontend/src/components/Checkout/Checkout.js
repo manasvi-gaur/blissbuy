@@ -6,15 +6,18 @@ import {
   useCreatePaymentLinkMutation,
   useUpdatePaymentInformationMutation,
 } from "../../redux/api/payment.api";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
 import { useRemoveAllCartItemsMutation } from "../../redux/api/cart.api";
-import GradientCircularProgress from "../Gradient Spinner/Spinner";
 import { CircularProgress } from "@mui/material";
+import orderPlacedAnimation from "../Animation/orderPlaced.lottie.json";
 export default function () {
   const formRef = useRef(null);
   const [createOrder] = useCreateOrderMutation();
-  const [createPaymentLink,{isLoading}] = useCreatePaymentLinkMutation();
+  const [createPaymentLink, { isLoading }] = useCreatePaymentLinkMutation();
   const [clearCart] = useRemoveAllCartItemsMutation();
+  const [showAnimation, setShowAnimation] = useState(false);
+  const navigate = useNavigate()
   const location = useLocation();
   const handlePayment = async (event) => {
     const data = new FormData(formRef.current);
@@ -46,10 +49,37 @@ export default function () {
     const paymentLinkStatus = queryParams.get("razorpay_payment_link_status");
     if (paymentLinkStatus === "paid") {
       clearCart();
+      setShowAnimation(true);
+      setTimeout(() => {
+        setShowAnimation(false);
+        navigate('/')
+      }, 3000);
     }
-  }, [location, clearCart]); 
+  }, [location, clearCart]);
   return (
     <div style={{ backgroundColor: "white", padding: "1rem" }}>
+      {showAnimation && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 10, // Ensure it's above all other components
+          }}
+        >
+          <Lottie
+            autoplay
+            loop={true} // Play animation once
+            animationData={orderPlacedAnimation}
+            style={{ height: "300px", width: "300px" }}
+          />
+        </div>
+      )}
       <h1
         style={{
           backgroundColor: "bisque",
@@ -94,7 +124,11 @@ export default function () {
             }}
             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
           >
-            {isLoading?<CircularProgress size="30px" color="inherit"/>: "Pay now "}
+            {isLoading ? (
+              <CircularProgress size="30px" color="inherit" />
+            ) : (
+              "Pay now "
+            )}
           </button>
         </div>
 
