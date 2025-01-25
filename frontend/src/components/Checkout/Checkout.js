@@ -8,6 +8,8 @@ import {
 } from "../../redux/api/payment.api";
 import { useLocation } from "react-router-dom";
 import { useRemoveAllCartItemsMutation } from "../../redux/api/cart.api";
+import GradientCircularProgress from "../Gradient Spinner/Spinner";
+import { CircularProgress } from "@mui/material";
 export default function () {
   const formRef = useRef(null);
   const [createOrder] = useCreateOrderMutation();
@@ -92,7 +94,7 @@ export default function () {
             }}
             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
           >
-            Pay now
+            {isLoading?<CircularProgress size="30px" color="inherit"/>: "Pay now "}
           </button>
         </div>
 

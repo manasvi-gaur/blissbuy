@@ -1,9 +1,11 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import RemoveTwoToneIcon from "@mui/icons-material/RemoveTwoTone";
+import Lottie from "lottie-react";
+import animation from "../Animation/cart.lottie.json";
 import {
   useGetCartQuery,
   useRemoveCartItemMutation,
@@ -14,7 +16,6 @@ import { LinearProgress } from "@mui/material";
 
 export default function Cart({ open, setOpen }) {
   const loggedIn = useSelector((state) => state.auth.isLogged);
-  const [checkLoading, setcheckLoading] = useState();
   const {
     data,
     isSuccess,
@@ -32,16 +33,6 @@ export default function Cart({ open, setOpen }) {
     if (isSuccess) {
       console.log(data.cartItems);
     }
-    if (isFetchingGetCart || isLoadingDelete || isLoadingUpdate) {
-      setcheckLoading(true);
-    }
-    if (
-      isFetchingGetCart == false &&
-      isLoadingDelete == false &&
-      isLoadingUpdate == false
-    ) {
-      setcheckLoading(false);
-    }
     console.log(data);
   }, [data, isSuccess, isFetchingGetCart, isLoadingDelete, isLoadingUpdate]);
 
@@ -53,10 +44,10 @@ export default function Cart({ open, setOpen }) {
 
   const handleIncDec = (cartId, id, type, quantity) => {
     if (isSuccess) {
-      if (type == "inc") {
+      if (type === "inc") {
         updateCartItem({ cartId, id, quantity: 1 });
       } else {
-        if (quantity == 1) handleRemoveCartItem(cartId);
+        if (quantity === 1) handleRemoveCartItem(cartId);
         else updateCartItem({ cartId, id, quantity: -1 });
       }
     }
@@ -122,7 +113,7 @@ export default function Cart({ open, setOpen }) {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {isSuccess   && data?.cartItem?.length > 0 ? (
+                            {isSuccess && data?.cartItem?.length > 0 ? (
                               data.cartItem?.map((cartItem) => (
                                 <li
                                   key={cartItem.product._id}
@@ -158,6 +149,7 @@ export default function Cart({ open, setOpen }) {
                                       <div>
                                         {cartItem.size.map((size) => (
                                           <div
+                                            key={size._id}
                                             className="text-gray-500 mt-2"
                                             style={{ fontFamily: "Courier" }}
                                           >
@@ -215,7 +207,17 @@ export default function Cart({ open, setOpen }) {
                                 </li>
                               ))
                             ) : (
-                              <p>No items in cart</p>
+                              <div className="flex items-center justify-center h-full w-full overflow-hidden">
+                                <Lottie
+                                  animationData={animation}
+                                  loop={true}
+                                  style={{
+                                    width: "200px",
+                                    height: "200px",
+                                    objectFit: "contain",
+                                  }}
+                                />
+                              </div>
                             )}
                           </ul>
                         </div>
@@ -223,7 +225,11 @@ export default function Cart({ open, setOpen }) {
                     </div>
 
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                      {(isFetchingGetCart || isLoadingDelete || isLoadingUpdate) && <LinearProgress color="secondary" />}
+                      {(isFetchingGetCart ||
+                        isLoadingDelete ||
+                        isLoadingUpdate) && (
+                        <LinearProgress color="secondary" />
+                      )}
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p style={{ fontFamily: "Times-Italic" }}>Subtotal</p>
                         <p>Rs. {data?.totalPrice ?? 0}</p>

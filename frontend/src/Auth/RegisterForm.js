@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../redux/api/auth.api";
+import GradientCircularProgress from "../components/Gradient Spinner/Spinner";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const RegisterForm = () => {
             alignItems: "center",
           }}
         >
-          <CircularProgress color="secondary" />
+          <GradientCircularProgress/>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>

@@ -9,6 +9,7 @@ import {
   setUserIdToLocalStorage,
   setTokenToLocalStorage,
 } from "../Utils/helper/auth";
+import GradientCircularProgress from "../components/Gradient Spinner/Spinner";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const LoginForm = () => {
             alignItems: "center", 
           }}
         >
-          <CircularProgress color="secondary" />
+          <GradientCircularProgress/>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
