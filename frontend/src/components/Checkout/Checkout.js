@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import DeliveryAddForm from "./DeliveryAddForm";
 import OrderSummary from "./OrderSummary";
-import { orderApi, useCreateOrderMutation } from "../../redux/api/order.api";
-import { useGetUserQuery } from "../../redux/api/user.api";
+import { useCreateOrderMutation } from "../../redux/api/order.api";
 import {
   useCreatePaymentLinkMutation,
   useUpdatePaymentInformationMutation,
@@ -12,7 +11,7 @@ import { useRemoveAllCartItemsMutation } from "../../redux/api/cart.api";
 export default function () {
   const formRef = useRef(null);
   const [createOrder] = useCreateOrderMutation();
-  const [createPaymentLink] = useCreatePaymentLinkMutation();
+  const [createPaymentLink,{isLoading}] = useCreatePaymentLinkMutation();
   const [clearCart] = useRemoveAllCartItemsMutation();
   const location = useLocation();
   const handlePayment = async (event) => {
@@ -69,6 +68,7 @@ export default function () {
           marginTop: "2rem",
         }}
       >
+        {/* {isLoading && <ClipLoader/>} */}
         {/* Delivery Address Form */}
         <div className="flex flex-col items-center w-full">
           <div

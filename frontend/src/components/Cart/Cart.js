@@ -2,20 +2,29 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import RemoveTwoToneIcon from '@mui/icons-material/RemoveTwoTone';
+import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
+import RemoveTwoToneIcon from "@mui/icons-material/RemoveTwoTone";
 import {
   useGetCartQuery,
   useRemoveCartItemMutation,
   useUpdateCartItemMutation,
 } from "../../redux/api/cart.api";
 import { useSelector } from "react-redux";
+import { LinearProgress } from "@mui/material";
 
 export default function Cart({ open, setOpen }) {
   const loggedIn = useSelector((state) => state.auth.isLogged);
-  const { data, isSuccess, refetch } = useGetCartQuery({skip: !loggedIn});
-  const [deleteCartItem] = useRemoveCartItemMutation();
-  const [updateCartItem] = useUpdateCartItemMutation();
+  const [checkLoading, setcheckLoading] = useState();
+  const {
+    data,
+    isSuccess,
+    refetch,
+    isFetching: isFetchingGetCart,
+  } = useGetCartQuery({ skip: !loggedIn });
+  const [deleteCartItem, { isLoading: isLoadingDelete }] =
+    useRemoveCartItemMutation();
+  const [updateCartItem, { isLoading: isLoadingUpdate }] =
+    useUpdateCartItemMutation();
   const handleRemoveCartItem = (id) => {
     deleteCartItem(id);
   };
@@ -23,9 +32,19 @@ export default function Cart({ open, setOpen }) {
     if (isSuccess) {
       console.log(data.cartItems);
     }
+    if (isFetchingGetCart || isLoadingDelete || isLoadingUpdate) {
+      setcheckLoading(true);
+    }
+    if (
+      isFetchingGetCart == false &&
+      isLoadingDelete == false &&
+      isLoadingUpdate == false
+    ) {
+      setcheckLoading(false);
+    }
     console.log(data);
-  }, [data, isSuccess]);
-  
+  }, [data, isSuccess, isFetchingGetCart, isLoadingDelete, isLoadingUpdate]);
+
   useEffect(() => {
     if (loggedIn) {
       refetch();
@@ -34,12 +53,11 @@ export default function Cart({ open, setOpen }) {
 
   const handleIncDec = (cartId, id, type, quantity) => {
     if (isSuccess) {
-      if(type=='inc'){
-        updateCartItem({cartId, id, quantity: 1})
-      }
-      else{
-        if(quantity==1) handleRemoveCartItem(cartId);
-        else updateCartItem({cartId, id, quantity: -1})
+      if (type == "inc") {
+        updateCartItem({ cartId, id, quantity: 1 });
+      } else {
+        if (quantity == 1) handleRemoveCartItem(cartId);
+        else updateCartItem({ cartId, id, quantity: -1 });
       }
     }
   };
@@ -104,7 +122,7 @@ export default function Cart({ open, setOpen }) {
                             role="list"
                             className="-my-6 divide-y divide-gray-200"
                           >
-                            {isSuccess && data?.cartItem?.length > 0 ? (
+                            {isSuccess   && data?.cartItem?.length > 0 ? (
                               data.cartItem?.map((cartItem) => (
                                 <li
                                   key={cartItem.product._id}
@@ -131,7 +149,9 @@ export default function Cart({ open, setOpen }) {
                                             {cartItem.product.title}
                                           </a>
                                         </h3>
-                                        <p className="ml-2 text-xs">Rs. {cartItem.price}</p>
+                                        <p className="ml-2 text-xs">
+                                          Rs. {cartItem.price}
+                                        </p>
                                       </div>
                                     </div>
                                     <div className="flex items-end justify-between text-sm">
@@ -143,7 +163,7 @@ export default function Cart({ open, setOpen }) {
                                           >
                                             Size: {size.name}
                                             <button
-                                            className="ml-1"
+                                              className="ml-1"
                                               onClick={() =>
                                                 handleIncDec(
                                                   cartItem._id,
@@ -153,7 +173,10 @@ export default function Cart({ open, setOpen }) {
                                                 )
                                               }
                                             >
-                                            <RemoveTwoToneIcon className="border border-black rounded-md mx-2" fontSize="small"/>
+                                              <RemoveTwoToneIcon
+                                                className="border border-black rounded-md mx-2"
+                                                fontSize="small"
+                                              />
                                             </button>
                                             {size.quantity}
                                             <button
@@ -166,7 +189,10 @@ export default function Cart({ open, setOpen }) {
                                                 )
                                               }
                                             >
-                                              <AddTwoToneIcon className="border border-black rounded-md mx-2" fontSize="small"/>
+                                              <AddTwoToneIcon
+                                                className="border border-black rounded-md mx-2"
+                                                fontSize="small"
+                                              />
                                             </button>
                                           </div>
                                         ))}
@@ -197,6 +223,7 @@ export default function Cart({ open, setOpen }) {
                     </div>
 
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+                      {(isFetchingGetCart || isLoadingDelete || isLoadingUpdate) && <LinearProgress color="secondary" />}
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p style={{ fontFamily: "Times-Italic" }}>Subtotal</p>
                         <p>Rs. {data?.totalPrice ?? 0}</p>
@@ -208,15 +235,21 @@ export default function Cart({ open, setOpen }) {
                         Shipping and taxes calculated at checkout.
                       </p>
                       <div className="mt-6">
-                        <Link
-                          to={"/checkout"}
-                          onClick={() => setOpen(false)}
-                          style={{ backgroundColor: "#BD446B" }}
-                          href="#"
-                          className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                        >
-                          Checkout
-                        </Link>
+                        {data?.cartItem?.length > 0 ? (
+                          <Link
+                            to={"/checkout"}
+                            onClick={() => setOpen(false)}
+                            style={{ backgroundColor: "#BD446B" }}
+                            href="#"
+                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                          >
+                            Checkout
+                          </Link>
+                        ) : (
+                          <div className="flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-600 rounded-md shadow-md">
+                            <p className="text-lg font-semibold">Cart Empty</p>
+                          </div>
+                        )}
                       </div>
                       <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                         <p>

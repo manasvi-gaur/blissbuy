@@ -1,25 +1,36 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useGetCategorisedProductsQuery } from '../../redux/api/product.api';
+import { LinearProgress } from '@mui/material';
 
 export default function ProductCard() {
   const location = useLocation();
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const [topLevelCategory, secondLevelCategory, thirdLevelCategory] = pathSegments;
-
+  const [fetching,setfetching] = useState();
   const filters = new URLSearchParams(location.search);
 
-  const { data, isSuccess, isError, error } = useGetCategorisedProductsQuery({
+  const { data,isFetching, isSuccess, isError, error } = useGetCategorisedProductsQuery({
     topLevelCategory,
     secondLevelCategory,
     thirdLevelCategory,
     filters: Object.fromEntries(filters.entries())
   });
+  console.log(isFetching);
 
   console.log(data);
 
+  useEffect(()=>{
+    if(isFetching){
+      setfetching(true);
+    }else{
+      setfetching(false);
+    }
+  },[isFetching])
+
   return (
     <div className="bg-white">
+      {fetching && <LinearProgress color="secondary"  />}
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
 

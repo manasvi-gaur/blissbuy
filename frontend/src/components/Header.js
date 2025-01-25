@@ -74,7 +74,7 @@ const navigation = {
           id: "brands",
           name: "Brands",
           items: [
-            { name: "Full Nelson", href: "#" },
+            { name: "Bliss", href: "#" },
             { name: "My Way", href: "#" },
             { name: "Re-Arranged", href: "#" },
             { name: "Counterfeit", href: "#" },

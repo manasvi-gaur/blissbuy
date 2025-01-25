@@ -313,7 +313,7 @@ export default function Product() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <div className='flex flex-wrap justify-center bg-black py-5'>
+                <div className='flex flex-wrap justify-center bg-white py-5'>
                     <ProductCard />
                 </div>
               </div>
