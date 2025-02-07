@@ -17,7 +17,6 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { password, email } = req.body;
-  console.log({password, email})
 
   try {
     const user = await userService.getUserByEmail(email);
