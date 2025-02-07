@@ -12,7 +12,7 @@ export const authSlice = createSlice({
         login: (state, action) => {
             state.isLogged = action.payload.isLogged;
             state.userId = action.payload.userId;
-            state.token = action.payload.token;
+            state.token = action.payload.jwt;
         },
         logout: (state) => {
             state.isLogged = false;
