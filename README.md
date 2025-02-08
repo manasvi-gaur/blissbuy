@@ -42,6 +42,16 @@ To start the backend server, run:
 cd ecommerceBackend
 npm run dev
 ```
+Alternatively, you can run the backend using Docker:
+1. Pull the Docker image:
+    ```bash
+    docker pull manasvigaur/blissbuy-backend:latest
+    ```
+2. Run the Docker container:
+    ```bash
+    docker run -p 5454:5454 manasvigaur/blissbuy-backend:latest
+    ```
+
 Open your browser and navigate to `http://localhost:3000` to view the application.
 
 ## Contributing
@@ -68,4 +78,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact Information
 For any questions or suggestions, please contact:
 - **Name:** Manasvi Gaur
-- **Email:** manasvi.gaur@example.com
+- **Email:** manasvigaur3@gmail.com
