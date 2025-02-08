@@ -1,9 +1,1 @@
-{
-    "rewrites": [
-      {
-        "source": "/:path*",
-        "destination": "https://blissbuy.onrender.com/:path*"
-      }
-    ]
-  }
-  
+{ "rewrites": [{ "source": "/(.*)", "destination": "/" }] }
