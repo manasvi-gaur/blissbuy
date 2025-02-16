@@ -276,24 +276,32 @@ export default function Header() {
                         {category.sections.map((section) => (
                           <div key={section.name}>
                             <p
-                              id={`${category.id}-${section.id}-heading-mobile`}
+                              id={`${section.name}-heading`}
                               className="font-medium text-gray-900"
                             >
                               {section.name}
                             </p>
                             <ul
                               role="list"
-                              aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
-                              className="mt-6 flex flex-col space-y-6"
+                              aria-labelledby={`${section.name}-heading`}
+                              className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                             >
                               {section.items.map((item) => (
-                                <li key={item.name} className="flow-root">
-                                  <a
-                                    href={item.href}
-                                    className="-m-2 block p-2 text-gray-500"
+                                <li
+                                  key={item.name}
+                                  className="flex"
+                                >
+                                  <Link
+                                    to={`/${category.name}/${section.name}/${item.name}`}
+                                    // onClick={handleClick(category.name,item.name)}
+                                    // onClick={()=>{
+                                    //   window.open(`/${category.name}/${item.name}/products`)
+
+                                    // }}
+                                    className="hover:text-gray-800"
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 </li>
                               ))}
                             </ul>

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import ProductCard from './ProductCard'
+import React, { useEffect } from "react";
+import ProductCard from "./ProductCard";
 /*
   This example requires some changes to your config:
   
@@ -14,90 +14,98 @@ import ProductCard from './ProductCard'
   }
   ```
 */
-import GrainRoundedIcon from '@mui/icons-material/GrainRounded';
-import { Fragment, useState } from 'react'
-import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetAllProductQuery } from '../../redux/api/product.api';
+import GrainRoundedIcon from "@mui/icons-material/GrainRounded";
+import { Fragment, useState } from "react";
+import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  MinusIcon,
+  PlusIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/20/solid";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useGetAllProductQuery } from "../../redux/api/product.api";
 
 const sortOptions = [
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
-]
+  { name: "Price: Low to High", href: "#", current: false },
+  { name: "Price: High to Low", href: "#", current: false },
+];
 const filters = [
   {
-    id: 'color',
-    name: 'Color',
+    id: "color",
+    name: "Color",
     options: [
-      { value: 'white', label: 'White', checked: false },
-      { value: 'beige', label: 'Beige', checked: false },
-      { value: 'blue', label: 'Blue', checked: false },
-      { value: 'brown', label: 'Brown', checked: false },
-      { value: 'green', label: 'Green', checked: false },
-      { value: 'purple', label: 'Purple', checked: false },
+      { value: "white", label: "White", checked: false },
+      { value: "beige", label: "Beige", checked: false },
+      { value: "blue", label: "Blue", checked: false },
+      { value: "brown", label: "Brown", checked: false },
+      { value: "green", label: "Green", checked: false },
+      { value: "purple", label: "Purple", checked: false },
     ],
   },
   {
-    id: 'price',
-    name: 'Price',
+    id: "price",
+    name: "Price",
     options: [
-      { value: '0t020', label: 'Rs 0. to 20K', checked: false },
-      { value: '20to50', label: 'Rs 20K to 50K', checked: false },
-      { value: '50to200', label: 'Rs 50K to 200K', checked: false },
-      { value: '200to300', label: 'Rs 200 to 300K', checked: false },
-      { value: '300to500', label: 'Rs 300K to 500K', checked: false },
+      { value: "0t020", label: "Rs 0. to 20K", checked: false },
+      { value: "20to50", label: "Rs 20K to 50K", checked: false },
+      { value: "50to200", label: "Rs 50K to 200K", checked: false },
+      { value: "200to300", label: "Rs 200 to 300K", checked: false },
+      { value: "300to500", label: "Rs 300K to 500K", checked: false },
     ],
   },
   {
-    id: 'size',
-    name: 'Size',
+    id: "size",
+    name: "Size",
     options: [
-      { value: 'xl', label: 'XL', checked: false },
-      { value: 'l', label: 'L', checked: false },
-      { value: 'm', label: 'M', checked: false },
-      { value: 's', label: 'S', checked: false },
-      { value: 'xs', label: 'XS', checked: false },
-      
+      { value: "xl", label: "XL", checked: false },
+      { value: "l", label: "L", checked: false },
+      { value: "m", label: "M", checked: false },
+      { value: "s", label: "S", checked: false },
+      { value: "xs", label: "XS", checked: false },
     ],
   },
-]
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Product() {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const location= useLocation()
-  const navigate = useNavigate()
-  const handleFilter=(value,sectionId)=>{
-    const searchParem   = new URLSearchParams(location.search)
-    let filterValue = searchParem.getAll(sectionId)
-    if(filterValue.length>0 && filterValue[0].split(",").includes(value)){
-        filterValue=filterValue[0].split(",").filter((item)=>item!==value);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handleFilter = (value, sectionId) => {
+    const searchParem = new URLSearchParams(location.search);
+    let filterValue = searchParem.getAll(sectionId);
+    if (filterValue.length > 0 && filterValue[0].split(",").includes(value)) {
+      filterValue = filterValue[0].split(",").filter((item) => item !== value);
 
-        if(filterValue.length===0){
-          searchParem.delete(sectionId)
-        }
-    }else{
-        filterValue.push(value)
+      if (filterValue.length === 0) {
+        searchParem.delete(sectionId);
+      }
+    } else {
+      filterValue.push(value);
     }
 
-    if(filterValue.length>0){
-        searchParem.set(sectionId,filterValue.join(","));
-        
+    if (filterValue.length > 0) {
+      searchParem.set(sectionId, filterValue.join(","));
     }
     const query = searchParem.toString();
-        navigate({search:`${query}`})
-  }
+    navigate({ search: `${query}` });
+  };
   return (
     <div className="bg-white">
       <div>
         {/* Mobile filter dialog */}
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-40 lg:hidden" onClose={setMobileFiltersOpen}>
+          <Dialog
+            as="div"
+            className="relative z-40 lg:hidden"
+            onClose={setMobileFiltersOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -122,7 +130,9 @@ export default function Product() {
               >
                 <Dialog.Panel className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
                   <div className="flex items-center justify-between px-4">
-                    <h2 className="text-lg font-medium text-gray-900">Filters</h2>
+                    <h2 className="text-lg font-medium text-gray-900">
+                      Filters
+                    </h2>
                     <button
                       type="button"
                       className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
@@ -136,20 +146,31 @@ export default function Product() {
                   {/* Filters */}
                   <form className="mt-4 border-t border-gray-200">
                     <h3 className="sr-only">Categories</h3>
-                    
 
                     {filters.map((section) => (
-                      <Disclosure as="div" key={section.id} className="border-t border-gray-200 px-4 py-6">
+                      <Disclosure
+                        as="div"
+                        key={section.id}
+                        className="border-t border-gray-200 px-4 py-6"
+                      >
                         {({ open }) => (
                           <>
                             <h3 className="-mx-2 -my-3 flow-root">
                               <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                <span className="font-medium text-gray-900">{section.name}</span>
+                                <span className="font-medium text-gray-900">
+                                  {section.name}
+                                </span>
                                 <span className="ml-6 flex items-center">
                                   {open ? (
-                                    <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                                    <MinusIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
                                   ) : (
-                                    <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                                    <PlusIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
                                   )}
                                 </span>
                               </Disclosure.Button>
@@ -157,9 +178,15 @@ export default function Product() {
                             <Disclosure.Panel className="pt-6">
                               <div className="space-y-6">
                                 {section.options.map((option, optionIdx) => (
-                                  <div key={option.value} className="flex items-center">
+                                  <div
+                                    key={option.value}
+                                    className="flex items-center"
+                                  >
                                     <input
-                                      id={`filter-mobile-${section.id}-${optionIdx}`}
+                                      onChange={() =>
+                                        handleFilter(option.value, section.id)
+                                      }
+                                      id={`filter-${section.id}-${optionIdx}`}
                                       name={`${section.id}[]`}
                                       defaultValue={option.value}
                                       type="checkbox"
@@ -167,8 +194,8 @@ export default function Product() {
                                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                     />
                                     <label
-                                      htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                      className="ml-3 min-w-0 flex-1 text-gray-500"
+                                      htmlFor={`filter-mobile${section.id}-${optionIdx}`}
+                                      className="ml-3 text-sm text-gray-600"
                                     >
                                       {option.label}
                                     </label>
@@ -189,7 +216,9 @@ export default function Product() {
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              New Arrivals
+            </h1>
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
@@ -220,9 +249,11 @@ export default function Product() {
                             <a
                               href={option.href}
                               className={classNames(
-                                option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                                active ? 'bg-gray-100' : '',
-                                'block px-4 py-2 text-sm'
+                                option.current
+                                  ? "font-medium text-gray-900"
+                                  : "text-gray-500",
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm"
                               )}
                             >
                               {option.name}
@@ -235,7 +266,10 @@ export default function Product() {
                 </Transition>
               </Menu>
 
-              <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+              <button
+                type="button"
+                className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+              >
                 <span className="sr-only">View grid</span>
                 <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -259,25 +293,36 @@ export default function Product() {
               {/* Filters */}
               <form className="hidden lg:block">
                 <div>
-                    <h1>Filters</h1>
-                    <GrainRoundedIcon/>
+                  <h1>Filters</h1>
+                  <GrainRoundedIcon />
                 </div>
-                
-                
+
                 <h3 className="sr-only">Categories</h3>
 
                 {filters.map((section) => (
-                  <Disclosure as="div" key={section.id} className="border-b border-gray-200 py-6">
+                  <Disclosure
+                    as="div"
+                    key={section.id}
+                    className="border-b border-gray-200 py-6"
+                  >
                     {({ open }) => (
                       <>
                         <h3 className="-my-3 flow-root">
                           <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                            <span className="font-medium text-gray-900">{section.name}</span>
+                            <span className="font-medium text-gray-900">
+                              {section.name}
+                            </span>
                             <span className="ml-6 flex items-center">
                               {open ? (
-                                <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
                               ) : (
-                                <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
                               )}
                             </span>
                           </Disclosure.Button>
@@ -285,9 +330,14 @@ export default function Product() {
                         <Disclosure.Panel className="pt-6">
                           <div className="space-y-4">
                             {section.options.map((option, optionIdx) => (
-                              <div key={option.value} className="flex items-center">
+                              <div
+                                key={option.value}
+                                className="flex items-center"
+                              >
                                 <input
-                                  onChange={()=>handleFilter(option.value,section.id)}
+                                  onChange={() =>
+                                    handleFilter(option.value, section.id)
+                                  }
                                   id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
                                   defaultValue={option.value}
@@ -313,8 +363,8 @@ export default function Product() {
 
               {/* Product grid */}
               <div className="lg:col-span-3">
-                <div className='flex flex-wrap justify-center bg-white py-5'>
-                    <ProductCard />
+                <div className="flex flex-wrap justify-center bg-white py-5">
+                  <ProductCard />
                 </div>
               </div>
             </div>
@@ -322,7 +372,5 @@ export default function Product() {
         </main>
       </div>
     </div>
-  )
+  );
 }
-
-
