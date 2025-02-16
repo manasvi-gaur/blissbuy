@@ -3,7 +3,7 @@ import React from 'react'
 const data=[
     {
         id:1,
-        image:"https://taruntahiliani.com/cdn/shop/products/tarun_shoot_p11652_2_600x.jpg?v=1650738521",
+        image:"https://taruntahiliani.com/cdn/shop/files/TTSEPT-257_900x.jpg?v=1739525180",
         name: "TARUN TAHILIANI"
     },
     {
@@ -18,7 +18,7 @@ const data=[
     },
     {
         id:4,
-        image:"https://ri.ritukumar.com/media/catalog/product/S/B/SBXSST0205Q1464657-RED-_1_.jpg?width=1000&height=1333&optimize=low&bg-color=255,255,255&fit=bounds",
+        image:"https://static3.azafashions.com/tr:w-450/uploads/product_gallery/br-awu-mlt-kl-1-bl-cw-242-0738023001642092094.jpg",
         name: "RITU KUMAR"
     },
     {
