@@ -24,8 +24,8 @@ export default function EndSeasonSaleSec() {
     <EndSeasonCardLayout key={data.id} data={data} />
   ));
   return (
-    <div className=" px-4 ld:px-5">
-      <div className="relative px-5">
+    <div className=" mx-4 ld:px-5">
+      <div className="relative">
         <AliceCarousel
           autoPlay
           autoPlayStrategy="none"
